@@ -21,106 +21,25 @@ namespace DiplomaBack.Controllers
             _context = context;
         }
 
-        // GET: api/Users
-        [HttpGet]
-        public IEnumerable<User> GetUsers()
-        {
-            return _context.Users;
-        }
-
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var user = await _context.Users.SingleOrDefaultAsync(m => m.Id == id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(user);
-        }
-
-        // PUT: api/Users/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser([FromRoute] int id, [FromBody] User user)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(user).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Users
+        // POST api/accounts
         [HttpPost]
-        public async Task<IActionResult> PostUser([FromBody] User user)
+        public async Task Post([FromBody]RegistrationViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            var userIdentity = _mapper.Map(model);
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
-        }
+            var result = await _userManager.CreateAsync(userIdentity, model.Password);
 
-        // DELETE: api/Users/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            if (!result.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
 
-            var user = await _context.Users.SingleOrDefaultAsync(m => m.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
+            await _appDbContext.Customers.AddAsync(new Customer { IdentityId = userIdentity.Id, Location = model.Location });
+            await _appDbContext.SaveChangesAsync();
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return Ok(user);
-        }
-
-        private bool UserExists(int id)
-        {
-            return _context.Users.Any(e => e.Id == id);
+            return new OkObjectResult("Account created");
         }
     }
 }

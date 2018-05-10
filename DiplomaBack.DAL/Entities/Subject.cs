@@ -4,7 +4,12 @@ using System.Text;
 
 namespace DiplomaBack.DAL.Entities
 {
-    class Subject
-    {
-    }
+  public class Subject
+  {
+    public int Id { get; set; }
+    public int FileId { get; set; }
+    public File File { get; set; }
+    public string Name { get; set; }
+    public string Url { get; set; }
+  }
 }

@@ -1,16 +1,11 @@
-﻿namespace DiplomaBack.DAL.Entities
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace DiplomaBack.DAL.Entities
 {
-    public class User
+    public class User : IdentityUser
     {
-        public int Id { get; set; }
-        public string Login { get; set; }
         public string FirstName { get; set; }
         public string SecondName { get; set; }
         public string MiddleName { get; set; }
-
-        public User()
-        {
-                
-        }
     }
 }

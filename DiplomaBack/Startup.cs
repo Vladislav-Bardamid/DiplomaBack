@@ -1,10 +1,14 @@
-﻿using DiplomaBack.DAL.EntityFrameworkCore;
+﻿using System;
+using DiplomaBack.DAL.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.WebSockets.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace DiplomaBack
@@ -21,8 +25,11 @@ namespace DiplomaBack
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string con = "Server=(localdb)\\mssqllocaldb;Database=ITutorDB;Trusted_Connection=True;MultipleActiveResultSets=true";
-            services.AddDbContext<DataBaseContext>(options => options.UseSqlServer(con, b => b.MigrationsAssembly("DiplomaBack")));
+            string connection = Configuration.GetConnectionString("DefaultConnection");
+          services.AddDbContext<DataBaseContext>(options =>
+            options.UseSqlServer(connection, b => b.MigrationsAssembly("DiplomaBack")));
+
+
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
                 builder.AllowAnyOrigin()

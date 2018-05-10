@@ -9,6 +9,11 @@ namespace DiplomaBack.DAL.EntityFrameworkCore
     public class DataBaseContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Tutor> Tutors { get; set; }
+        public DbSet<Subject> Subjects { get; set; }
+        public DbSet<Lesson> Lessons { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<File> Files { get; set; }
 
         public DataBaseContext(DbContextOptions<DataBaseContext> options)
             : base((DbContextOptions)options)
