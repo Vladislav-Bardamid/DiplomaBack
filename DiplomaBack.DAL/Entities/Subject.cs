@@ -13,3 +13,4 @@ namespace DiplomaBack.DAL.Entities
     public string Url { get; set; }
   }
 }
+    
