@@ -15,14 +15,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace DiplomaBack.Controllers
 {
     [Produces("application/json")]
-    [Route("api/Accounts")]
-    public class AccountsController : Controller
+    [Route("api/Users")]
+    public class UsersController : Controller
     {
       private readonly DataBaseContext _dataBaseContext;
       private readonly UserManager<User> _userManager;
       private readonly IMapper _mapper;
 
-      public AccountsController(UserManager<User> userManager, IMapper mapper, DataBaseContext dataBaseContext)
+      public UsersController(UserManager<User> userManager, IMapper mapper, DataBaseContext dataBaseContext)
       {
         _userManager = userManager;
         _mapper = mapper;
@@ -31,7 +31,7 @@ namespace DiplomaBack.Controllers
 
       // POST api/accounts
       [HttpPost]
-      public async Task<IActionResult> Post([FromBody]RegistrationViewModel model)
+      public async Task<IActionResult> PostUser([FromBody]RegistrationViewModel model)
       {
         if (!ModelState.IsValid)
         {
@@ -44,8 +44,8 @@ namespace DiplomaBack.Controllers
 
         if (!result.Succeeded) return new BadRequestObjectResult(Errors.AddErrorsToModelState(result, ModelState));
 
-        await _dataBaseContext.Users.AddAsync(new User());
-        await _dataBaseContext.SaveChangesAsync();
+        //await _dataBaseContext.Users.AddAsync(new User());
+        //await _dataBaseContext.SaveChangesAsync();
 
         return new OkObjectResult("Account created");
       }
